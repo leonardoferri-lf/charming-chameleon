@@ -288,7 +288,7 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 .eyebrow { margin-bottom: 1.8rem; color: var(--accent); }
 
 .hero__title {
-  font-size: clamp(2.2rem, 7.4vw, 5.9rem);
+  font-size: clamp(1.5rem, 7.4vw, 5.9rem);
   font-weight: 800;
   text-transform: uppercase;
   line-height: 1;
@@ -704,7 +704,7 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 .sector__index { color: var(--accent); }
 
 .sector h3 {
-  font-size: clamp(2.6rem, 8vw, 6.6rem);
+  font-size: clamp(1.5rem, 7.4vw, 6.6rem);
   font-weight: 800;
   text-transform: uppercase;
   line-height: 0.95;
@@ -845,7 +845,7 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 .contact .section-head__label { justify-content: center; }
 
 .contact__title {
-  font-size: clamp(2.4rem, 6.4vw, 5.4rem);
+  font-size: clamp(1.45rem, 6.4vw, 5.4rem);
   text-transform: uppercase;
   font-weight: 800;
   margin: 1.6rem 0 3rem;
@@ -1087,7 +1087,14 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 
 @media (max-width: 44rem) {
   .nav { flex-wrap: wrap; padding: 0.9rem var(--pad); }
-  .nav__links { width: 100%; overflow-x: auto; padding-bottom: 0.2rem; }
+  .nav__links {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    scrollbar-width: none;
+  }
+  .nav__links::-webkit-scrollbar { display: none; }
+  .nav__links a { white-space: nowrap; flex-shrink: 0; }
   .hero { padding-top: 9rem; }
   .hero__scroll { display: none; }
   .sector { min-height: 0; }
