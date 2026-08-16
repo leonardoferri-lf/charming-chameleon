@@ -152,6 +152,12 @@ button:focus-visible {
   transition: opacity 0.25s;
 }
 
+.cursor-ring.is-link {
+  width: 58px; height: 58px;
+  border-color: var(--accent);
+  background: hsla(var(--h), 90%, 55%, 0.08);
+}
+
 .cursor-ring.is-play {
   width: 82px; height: 82px;
   background: hsla(var(--h), 90%, 55%, 0.12);
@@ -484,9 +490,28 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 
 .project__sector { color: var(--accent); margin-bottom: 0.8rem; }
 
-.project__info h3 { font-size: clamp(1.6rem, 3vw, 2.5rem); margin-bottom: 1rem; }
+.project__info h3 {
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  margin-bottom: 1rem;
+  color: transparent;
+  background: linear-gradient(90deg,
+    var(--accent-soft) 0%, var(--accent) 49.75%, var(--ink) 50.25%, var(--ink) 100%);
+  background-size: 205% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  transition: background-position 0.7s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
 
-.project__info > p:not(.mono) { max-width: 27rem; color: var(--dim); }
+.project:hover .project__info h3 { background-position: 0% 0; }
+
+.project__info > p:not(.mono) {
+  max-width: 27rem;
+  color: var(--dim);
+  transition: color 0.4s ease;
+}
+
+.project__info > p:not(.mono):hover { color: var(--ink); }
 
 .project--right .project__info > p:not(.mono) { margin-left: auto; }
 
@@ -590,6 +615,8 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 @media (min-width: 56rem) { .caps__list { grid-template-columns: repeat(4, 1fr); } }
 
 .cap {
+  position: relative;
+  overflow: hidden;
   padding: 2.2rem 1.7rem 2.6rem;
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -599,17 +626,41 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
               border-color 0.45s ease, box-shadow 0.45s ease, opacity 0.7s ease;
 }
 
+.cap::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -55%;
+  width: 38%;
+  background: linear-gradient(105deg,
+    transparent, hsla(var(--h), 90%, 70%, 0.08), transparent);
+  transform: skewX(-14deg);
+  transition: left 0.8s cubic-bezier(0.22, 0.9, 0.24, 1);
+  pointer-events: none;
+}
+
+.cap:hover::before { left: 125%; }
+
 .cap:hover {
   transform: translateY(-8px);
   border-color: var(--glow);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), 0 0 70px hsla(var(--h), 90%, 55%, 0.16);
 }
 
-.cap__time { color: var(--accent); margin-bottom: 2.2rem; }
+.cap__time {
+  color: var(--accent);
+  margin-bottom: 2.2rem;
+  transition: letter-spacing 0.5s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+
+.cap:hover .cap__time { letter-spacing: 0.32em; }
 
 .cap h3 { font-size: 1.3rem; margin-bottom: 0.9rem; }
 
-.cap p:last-child { font-size: 0.94rem; color: var(--dim); }
+.cap p:last-child { font-size: 0.94rem; color: var(--dim); transition: color 0.4s ease; }
+
+.cap:hover p:last-child { color: var(--ink); }
 
 /* ---------- CREATIVE DIRECTION ---------- */
 
@@ -699,7 +750,19 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
   gap: 1.1rem;
   border-top: 1px solid var(--line);
   padding: 3rem 0;
+  transition: padding-left 0.55s cubic-bezier(0.22, 0.9, 0.24, 1);
 }
+
+@media (hover: hover) { .sector:hover { padding-left: 1.4rem; } }
+
+.sector:hover h3 {
+  color: var(--accent);
+  -webkit-text-stroke: 1.5px transparent;
+  text-shadow: 0 0 80px var(--glow);
+}
+
+.sector p:last-child { transition: color 0.4s ease; }
+.sector p:last-child:hover { color: var(--ink); }
 
 .sector__index { color: var(--accent); }
 
@@ -797,7 +860,14 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
   align-self: start;
 }
 
-.about__portrait img { width: 100%; height: auto; display: block; }
+.about__portrait img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.9s cubic-bezier(0.22, 0.9, 0.24, 1), filter 0.9s ease;
+}
+
+.about__portrait:hover img { transform: scale(1.035); filter: saturate(1.12); }
 
 .about__lead {
   font-family: var(--font-display);

@@ -11,6 +11,7 @@
   /* ================= HUE ENGINE ================= */
   let hue = 160;
   let hueTarget = 160;
+  let observerHue = 160;
   let cycling = false;
 
   const hueSections = document.querySelectorAll("[data-hue]");
@@ -19,7 +20,10 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           cycling = entry.target.hasAttribute("data-cycle");
-          if (!cycling) hueTarget = parseFloat(entry.target.dataset.hue);
+          if (!cycling) {
+            observerHue = parseFloat(entry.target.dataset.hue);
+            hueTarget = observerHue;
+          }
         }
       });
     },
@@ -144,6 +148,14 @@
       el.addEventListener("pointerenter", () => ring.classList.add("is-play"));
       el.addEventListener("pointerleave", () => ring.classList.remove("is-play"));
     });
+
+    /* Ring acknowledges every interactive element */
+    document.addEventListener("pointerover", (e) => {
+      const t = e.target;
+      const hit = t.closest && t.closest("a, button, .creative__tags li, .client-logo");
+      const isPlay = t.closest && t.closest("[data-cursor='play']");
+      ring.classList.toggle("is-link", !!hit && !isPlay);
+    }, { passive: true });
   }
 
   /* ================= MASTER FRAME LOOP ================= */
@@ -209,7 +221,7 @@
   );
   document.querySelectorAll(".project, .sector").forEach((el) => liveObserver.observe(el));
 
-  /* ================= 3D TILT ON POSTERS ================= */
+  /* ================= 3D TILT + INNER PARALLAX + CHASING PLAY CHIP ================= */
   if (finePointer && !reduceMotion) {
     document.querySelectorAll(".project__poster").forEach((poster) => {
       const damp = 9;
@@ -219,12 +231,59 @@
         const py = (e.clientY - r.top) / r.height - 0.5;
         poster.style.transform =
           `rotateY(${px * damp}deg) rotateX(${-py * damp}deg) translateZ(0)`;
+        const img = poster.querySelector("img");
+        const chip = poster.querySelector(".poster__play");
+        if (img) img.style.transform = `translate(${-px * 4}%, ${-py * 4}%) scale(1.09)`;
+        if (chip) chip.style.transform = `translate(${px * 30}px, ${py * 22}px) scale(1.12)`;
       });
       poster.addEventListener("pointerleave", () => {
         poster.style.transform = "rotateY(0deg) rotateX(0deg)";
         poster.style.transition = "transform 0.6s cubic-bezier(0.22, 0.9, 0.24, 1), box-shadow 0.5s ease, border-color 0.5s ease";
+        const img = poster.querySelector("img");
+        const chip = poster.querySelector(".poster__play");
+        if (img) img.style.transform = "";
+        if (chip) chip.style.transform = "";
         setTimeout(() => { poster.style.transition = ""; }, 600);
       });
+    });
+
+    /* Pointing at a project or sector pulls the whole page toward its colour */
+    document.querySelectorAll(".project[data-hue], .sector[data-hue]").forEach((el) => {
+      el.addEventListener("pointerenter", () => {
+        if (!cycling) hueTarget = parseFloat(el.dataset.hue);
+      });
+      el.addEventListener("pointerleave", () => {
+        if (!cycling) hueTarget = observerHue;
+      });
+    });
+
+    /* Timecode scramble on nav links: mono glyphs shuffle, then settle */
+    const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const scramble = (el) => {
+      if (el.dataset.scrambling) return;
+      const orig = el.dataset.orig || (el.dataset.orig = el.textContent);
+      el.dataset.scrambling = "1";
+      const start = performance.now();
+      const dur = 380;
+      const tick = (now) => {
+        const t = (now - start) / dur;
+        if (t >= 1) {
+          el.textContent = orig;
+          delete el.dataset.scrambling;
+          return;
+        }
+        const reveal = Math.floor(orig.length * t);
+        el.textContent =
+          orig.slice(0, reveal) +
+          [...orig.slice(reveal)]
+            .map((c) => (c === " " ? " " : GLYPHS[(Math.random() * GLYPHS.length) | 0]))
+            .join("");
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    document.querySelectorAll(".nav__links a").forEach((a) => {
+      a.addEventListener("pointerenter", () => scramble(a));
     });
   }
 
