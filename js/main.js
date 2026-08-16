@@ -302,4 +302,27 @@
       lastY = y;
     }, { passive: true });
   }
+
+  /* ================= BACK TO TOP: scroll-progress dial ================= */
+  const totop = document.getElementById("totop");
+  if (totop) {
+    const ring = totop.querySelector(".totop__progress");
+    const CIRC = 2 * Math.PI * 21;
+    ring.style.strokeDasharray = CIRC.toFixed(1);
+
+    const updateDial = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      ring.style.strokeDashoffset = (CIRC * (1 - p)).toFixed(1);
+      totop.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.6);
+    };
+
+    window.addEventListener("scroll", updateDial, { passive: true });
+    window.addEventListener("resize", updateDial);
+    updateDial();
+
+    totop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
 })();
