@@ -178,8 +178,12 @@
     el.style.setProperty("--i", i);
   });
 
+  document.querySelectorAll(".creative__tags li").forEach((el, i) => {
+    el.style.setProperty("--i", i);
+  });
+
   const revealTargets = document.querySelectorAll(
-    ".section-head h2, .contact__title, .project, .cap, .sector, .about__grid, .clients__grid"
+    ".section-head h2, .contact__title, .project, .cap, .sector, .about__grid, .clients__grid, .creative__body, .creative__tags, .creative__close"
   );
   const revealObserver = new IntersectionObserver(
     (entries) => {
