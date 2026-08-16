@@ -492,8 +492,90 @@ section { position: relative; padding: clamp(5rem, 10vw, 9rem) var(--pad); }
 
 .project__meta { margin-top: 1.1rem; color: var(--accent); }
 
-.work__note { text-align: center; margin-top: 1rem; }
-.work__note a { color: var(--accent); }
+/* Portfolio call-to-action: outlined type that fills with the
+   living gradient on hover, underline draws itself, arrow lifts */
+
+.work__portfolio {
+  text-align: center;
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.work__portfolio-eyebrow { color: var(--accent); margin-bottom: 1.2rem; }
+
+.portfolio-link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 4.6vw, 3.8rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  transition: letter-spacing 0.5s ease;
+}
+
+.portfolio-link__text {
+  position: relative;
+  color: transparent;
+  -webkit-text-stroke: 1.5px hsla(var(--h), 85%, 62%, 0.85);
+}
+
+.portfolio-link__text::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  background: linear-gradient(100deg,
+    hsl(160 85% 55%), hsl(200 85% 60%), hsl(260 80% 65%),
+    hsl(315 80% 60%), hsl(30 90% 58%), hsl(160 85% 55%));
+  background-size: 600% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: skin 8s linear infinite;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.65s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+
+.portfolio-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.18em;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    hsl(160 85% 55%), hsl(260 80% 65%), hsl(30 90% 58%));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.65s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+
+.portfolio-link__arrow {
+  color: var(--accent);
+  font-size: 0.75em;
+  transition: transform 0.45s cubic-bezier(0.22, 0.9, 0.24, 1), color 0.45s ease;
+}
+
+.portfolio-link:hover,
+.portfolio-link:focus-visible { letter-spacing: 0.015em; }
+
+.portfolio-link:hover .portfolio-link__text::before,
+.portfolio-link:focus-visible .portfolio-link__text::before { clip-path: inset(0 0 0 0); }
+
+.portfolio-link:hover::after,
+.portfolio-link:focus-visible::after { transform: scaleX(1); }
+
+.portfolio-link:hover .portfolio-link__arrow,
+.portfolio-link:focus-visible .portfolio-link__arrow {
+  transform: translate(0.18em, -0.22em) scale(1.15);
+}
+
+.work__portfolio-url { margin-top: 1.4rem; }
 
 /* ---------- CAPABILITIES ---------- */
 
